@@ -1,22 +1,21 @@
 # Developer Landing API
 
-Backend API for developer landing page.
+Backend API для страницы разработчика.
 
-## Overview
+## Описание проекта
 
-Developer Landing API is a FastAPI backend service for processing contact form requests.
+Developer Landing API — это backend-приложение на FastAPI для обработки заявок из формы обратной связи.
 
-The API provides:
+API позволяет:
 
-- Contact form endpoint
-- Input validation with Pydantic
-- Sentiment analysis of messages
-- Request logging
-- Rate limiting protection
-- Health check endpoint
-- Automatic Swagger documentation
+- принимать контактные данные пользователя;
+- проверять входящие данные;
+- анализировать текст сообщения;
+- ограничивать количество запросов;
+- сохранять информацию о запросах в логах;
+- предоставлять документацию API через Swagger.
 
-## Tech Stack
+## Используемые технологии
 
 - Python 3.10+
 - FastAPI
@@ -26,7 +25,37 @@ The API provides:
 - Google Generative AI
 - python-dotenv
 
-## Project Structure
+## Почему были выбраны эти технологии
+
+### FastAPI
+
+Я выбрала FastAPI, потому что это современный и удобный фреймворк для создания API на Python. Он позволяет быстро реализовать backend, имеет понятную структуру и автоматически создаёт документацию через Swagger.
+
+### Pydantic
+
+Pydantic используется для проверки входящих данных. Это помогает убедиться, что пользователь отправляет корректную информацию (например, правильный email и заполненные поля).
+
+### Uvicorn
+
+Uvicorn используется для запуска FastAPI-приложения. Это лёгкий и быстрый ASGI-сервер, который хорошо подходит для разработки и тестирования.
+
+### SlowAPI
+
+SlowAPI добавлен для ограничения количества запросов к API. Это помогает защитить endpoint от большого количества повторных запросов и спама.
+
+### Google Generative AI
+
+Google Generative AI используется для анализа текста комментария пользователя. С помощью AI определяется тональность сообщения.
+
+### Logging
+
+Логирование добавлено для сохранения информации о входящих запросах и упрощения поиска ошибок во время разработки.
+
+### CORS Middleware
+
+CORS Middleware используется для настройки взаимодействия между frontend и backend частью приложения.
+
+## Структура проекта
 
 ```text
 developer-landing/
@@ -44,15 +73,15 @@ developer-landing/
 └── README.md
 ```
 
-## Installation
+## Установка
 
-### 1. Clone repository
+### 1. Клонирование репозитория
 
 ```bash
 git clone https://github.com/SwaggyBaron/developer-landing.git
 ```
 
-Go to project directory:
+Перейти в папку проекта:
 
 ```bash
 cd developer-landing
@@ -60,9 +89,9 @@ cd developer-landing
 
 ---
 
-### 2. Create virtual environment
+### 2. Создание виртуального окружения
 
-MacOS / Linux:
+Для MacOS / Linux:
 
 ```bash
 python3 -m venv venv
@@ -70,7 +99,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-Windows:
+Для Windows:
 
 ```bash
 python -m venv venv
@@ -80,7 +109,7 @@ venv\Scripts\activate
 
 ---
 
-### 3. Install dependencies
+### 3. Установка зависимостей
 
 ```bash
 pip install -r requirements.txt
@@ -88,51 +117,45 @@ pip install -r requirements.txt
 
 ---
 
-## Environment variables
+## Настройка переменных окружения
 
-Create `.env` file in the project root:
+Создайте файл `.env` в корне проекта:
 
 ```env
 AI_API_KEY=your_google_ai_api_key
 ```
 
-This key is used for message sentiment analysis.
+Этот ключ используется для анализа текста комментариев через Google Generative AI.
 
----
+## Запуск проекта
 
-## Run application
-
-Start the development server:
+Запустить сервер:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The API will be available at:
+После запуска приложение будет доступно:
 
 ```
 http://127.0.0.1:8000
 ```
 
----
+## Документация API
 
-## API Documentation
-
-Swagger UI:
+Swagger UI доступен по адресу:
 
 ```
 http://127.0.0.1:8000/docs
 ```
 
----
+## API Endpoints
 
-# Endpoints
+### GET /
 
-## GET /
+Проверка состояния приложения.
 
-Basic API status check.
-
-Response:
+Ответ:
 
 ```json
 {
@@ -142,11 +165,11 @@ Response:
 
 ---
 
-## GET /api/health
+### GET /api/health
 
-Health check endpoint.
+Проверка работоспособности API.
 
-Response:
+Ответ:
 
 ```json
 {
@@ -156,53 +179,49 @@ Response:
 
 ---
 
-## POST /api/contact
+### POST /api/contact
 
-Creates a new contact request.
+Создание новой заявки из формы обратной связи.
 
-Request example:
+Пример запроса:
 
 ```json
 {
   "name": "Ryan Gosling",
   "email": "ryan@example.com",
   "phone": "+79999999999",
-  "comment": "Спасибо большое!"
+  "comment": "Спасибо за проект!"
 }
 ```
 
-Response example:
+Пример ответа:
 
 ```json
 {
   "message": "Contact request received",
   "sentiment": "positive",
   "data": {
-    "name": "Ryan Gosling",
-    "email": "ryan@example.com",
-    "phone": "+79999999999",
-    "comment": "Спасибо большое!"
+  "name": "Ryan Gosling",
+  "email": "ryan@example.com",
+  "phone": "+79999999999",
+  "comment": "Спасибо за проект!"
   }
 }
 ```
 
----
+## Дополнительные возможности
 
-## Security
+В проекте реализовано:
 
-Implemented:
+- ограничение запросов: `5 запросов в минуту`;
+- обработка ошибок;
+- логирование запросов;
+- проверка входящих данных;
+- поддержка CORS;
+- автоматическая документация Swagger.
 
-- Rate limiting: `5 requests/minute`
-- CORS middleware
-- Global exception handler
-- Request logging
+## Логирование
 
----
+Информация о запросах сохраняется в папке `logs`.
 
-## Development
-
-Run server with auto reload:
-
-```bash
-uvicorn app.main:app --reload
-```
+Папка создаётся автоматически при запуске приложения.
